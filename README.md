@@ -4,3 +4,5 @@
 ![Build, Lint and Test](https://github.com/floric/neuland/workflows/Build,%20Lint%20and%20Test/badge.svg)
 
 This is my first real Rust test. I decided to create a simple graph library / in-memory database.
+
+Please feel free to propose code improvements. This is a pure learning project for Rust and graph theory. :)

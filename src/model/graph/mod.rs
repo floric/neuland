@@ -25,7 +25,7 @@ impl Graph {
     pub fn create_node(&mut self, attributes: Attributes) -> &Node {
         let n = Node::new(attributes);
         let node_id = n.id().clone();
-        self.nodes.insert(n.id().clone(), n);
+        self.nodes.insert(node_id.clone(), n);
         self.get_node(&node_id).unwrap()
     }
 
@@ -65,17 +65,13 @@ impl Graph {
             attributes,
         );
         let edge_id = e.id().clone();
-        self.edges.insert(e.id().clone(), e);
-
+        self.edges.insert(edge_id.clone(), e);
         let edge = self.edges.get(&edge_id).unwrap();
 
-        let connection_key = util::build_relation_key(source_id, destination_id);
-        let relations_map = self
-            .relations
-            .entry(connection_key)
-            .or_insert_with(HashMap::new);
-
-        relations_map.insert(String::from(relation), edge_id);
+        self.relations
+            .entry(util::build_relation_key(source_id, destination_id))
+            .or_insert_with(HashMap::new)
+            .insert(String::from(relation), edge_id);
 
         edge
     }
@@ -91,18 +87,16 @@ impl Graph {
     }
 
     pub fn has_any_relation(&self, source_id: &str, destination_id: &str) -> bool {
-        let relation_key = util::build_relation_key(source_id, destination_id);
-        self.relations.contains_key(&relation_key)
-            && !self.relations.get(&relation_key).unwrap().is_empty()
+        self.relations
+            .get(&util::build_relation_key(source_id, destination_id))
+            .map(|n| -> bool { !n.is_empty() })
+            .unwrap_or(false)
     }
 
     pub fn has_relation(&self, relation: &str, source_id: &str, destination_id: &str) -> bool {
-        let relation_key = util::build_relation_key(source_id, destination_id);
-        self.relations.contains_key(&relation_key)
-            && self
-                .relations
-                .get(&relation_key)
-                .unwrap()
-                .contains_key(relation)
+        self.relations
+            .get(&util::build_relation_key(source_id, destination_id))
+            .map(|n| -> bool { n.contains_key(relation) })
+            .unwrap_or(false)
     }
 }
