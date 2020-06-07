@@ -18,3 +18,23 @@ fn test_node_find_by_attributes() {
     assert!(!matches.contains(&&node_b));
     assert!(!matches.contains(&&node_c));
 }
+
+#[test]
+fn test_node_find_by_attributes_with_other_value() {
+    let mut graph = Graph::default();
+    let mut attributes = Attributes::default();
+    attributes.set("test", String::from("a"));
+    graph.create_node(attributes);
+
+    let matches = graph.find_by_attribute("test", "b");
+    assert!(matches.is_empty());
+}
+
+#[test]
+fn test_node_find_by_attributes_with_no_result() {
+    let mut graph = Graph::default();
+    graph.create_node(Attributes::default());
+
+    let matches = graph.find_by_attribute("x", "a");
+    assert!(matches.is_empty());
+}

@@ -46,6 +46,21 @@ fn test_edge_creation() {
 }
 
 #[test]
+fn test_edge_retrieval() {
+    let mut graph = Graph::default();
+
+    let node_a = graph.create_node(Attributes::default()).clone();
+    let node_b = graph.create_node(Attributes::default()).clone();
+    let edge_a = graph
+        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .clone();
+    let saved_edge_a = graph.get_edge(edge_a.id()).unwrap();
+
+    assert_eq!(saved_edge_a.id(), edge_a.id());
+    assert!(graph.get_edge("abc").is_none());
+}
+
+#[test]
 fn test_edge_removal() {
     let mut graph = Graph::default();
 
@@ -62,4 +77,26 @@ fn test_edge_removal() {
     assert_eq!(2, graph.node_count());
     assert_eq!(1, graph.edge_count());
     assert!(graph.has_any_relation(node_a.id(), node_b.id()));
+}
+
+#[test]
+fn test_edges_removal() {
+    let mut graph = Graph::default();
+
+    let node_a = graph.create_node(Attributes::default()).clone();
+    let node_b = graph.create_node(Attributes::default()).clone();
+    let edge_a = graph
+        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .clone();
+    let edge_b = graph
+        .create_edge("rel-b", Attributes::default(), node_a.id(), node_b.id())
+        .clone();
+    graph.remove_edge(edge_a.id());
+    graph.remove_edge(edge_b.id());
+
+    assert!(!graph.has_relation("rel-a", node_a.id(), node_b.id()));
+    assert!(!graph.has_relation("rel-b", node_a.id(), node_b.id()));
+    assert_eq!(2, graph.node_count());
+    assert_eq!(0, graph.edge_count());
+    assert!(!graph.has_any_relation(node_a.id(), node_b.id()));
 }
