@@ -1,6 +1,0 @@
-[feature_a_and_b_coverage]
-release = true
-
-[report]
-coveralls = "PjHye39Zas48IvyKK95NNUugmQ5y9L9L2"
-out = ["Html", "Xml"]
