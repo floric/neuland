@@ -3,7 +3,7 @@ use nanoid::nanoid;
 use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
 
-#[derive(PartialEq, Eq, Clone)]
+#[derive(Clone, Eq)]
 pub struct Node {
     id: String,
     attributes: HashSet<Attribute>,
@@ -24,4 +24,10 @@ impl Node {
 
 impl Hash for Node {
     fn hash<H: Hasher>(&self, _: &mut H) {}
+}
+
+impl PartialEq for Node {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
 }

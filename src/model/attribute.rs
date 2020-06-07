@@ -1,8 +1,4 @@
-use std::hash::{Hash, Hasher};
+use std::hash::Hash;
 
-#[derive(PartialEq, Eq, Clone)]
+#[derive(PartialEq, Eq, Clone, Hash)]
 pub struct Attribute {}
-
-impl Hash for Attribute {
-    fn hash<H: Hasher>(&self, _: &mut H) {}
-}

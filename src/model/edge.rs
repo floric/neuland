@@ -3,18 +3,20 @@ use nanoid::nanoid;
 use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
 
-#[derive(PartialEq, Eq, Clone)]
+#[derive(Clone, Eq)]
 pub struct Edge {
     id: String,
+    relation: String,
     from: String,
     to: String,
     attributes: HashSet<Attribute>,
 }
 
 impl Edge {
-    pub fn new(from: String, to: String, attributes: HashSet<Attribute>) -> Edge {
+    pub fn new(relation: String, from: String, to: String, attributes: HashSet<Attribute>) -> Edge {
         Edge {
             id: nanoid!(),
+            relation,
             from,
             to,
             attributes,
@@ -23,6 +25,10 @@ impl Edge {
 
     pub fn id(&self) -> &String {
         &self.id
+    }
+
+    pub fn relation(&self) -> &String {
+        &self.relation
     }
 
     pub fn from_id(&self) -> &String {
@@ -36,4 +42,10 @@ impl Edge {
 
 impl Hash for Edge {
     fn hash<H: Hasher>(&self, _: &mut H) {}
+}
+
+impl PartialEq for Edge {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
 }
