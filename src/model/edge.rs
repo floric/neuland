@@ -1,19 +1,18 @@
-use super::attribute::Attribute;
+use super::attributes::Attributes;
 use nanoid::nanoid;
-use std::collections::HashSet;
-use std::hash::{Hash, Hasher};
+use std::hash::Hash;
 
-#[derive(Clone, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct Edge {
     id: String,
     relation: String,
     from: String,
     to: String,
-    attributes: HashSet<Attribute>,
+    attributes: Attributes,
 }
 
 impl Edge {
-    pub fn new(relation: String, from: String, to: String, attributes: HashSet<Attribute>) -> Edge {
+    pub fn new(relation: String, from: String, to: String, attributes: Attributes) -> Edge {
         Edge {
             id: nanoid!(),
             relation,
@@ -38,14 +37,8 @@ impl Edge {
     pub fn to_id(&self) -> &String {
         &self.to
     }
-}
 
-impl Hash for Edge {
-    fn hash<H: Hasher>(&self, _: &mut H) {}
-}
-
-impl PartialEq for Edge {
-    fn eq(&self, other: &Self) -> bool {
-        self.id == other.id
+    pub fn attributes(&self) -> &Attributes {
+        &self.attributes
     }
 }

@@ -1,10 +1,10 @@
 mod util;
 
-use super::Attribute;
+use super::Attributes;
 use super::Edge;
 use super::Node;
 use std::collections::HashMap;
-use std::collections::HashSet;
+use std::option::Option;
 
 #[derive(Default)]
 pub struct Graph {
@@ -18,6 +18,31 @@ impl Graph {
         self.nodes.len()
     }
 
+    pub fn get_node(&self, id: &str) -> Option<&Node> {
+        self.nodes.get(id)
+    }
+
+    pub fn create_node(&mut self, attributes: Attributes) -> &Node {
+        let n = Node::new(attributes);
+        let node_id = n.id().clone();
+        self.nodes.insert(n.id().clone(), n);
+        self.get_node(&node_id).unwrap()
+    }
+
+    pub fn find_by_attribute(&self, key: &str, value: &str) -> Vec<&Node> {
+        self.nodes
+            .values()
+            .filter(|node| -> bool {
+                node.attributes()
+                    .get(key)
+                    .filter(|entry| -> bool { *entry == value })
+                    .is_some()
+            })
+            .collect::<Vec<&Node>>()
+    }
+}
+
+impl Graph {
     pub fn edge_count(&self) -> usize {
         self.edges.len()
     }
@@ -26,21 +51,10 @@ impl Graph {
         self.edges.get(id)
     }
 
-    pub fn get_node(&self, id: &str) -> Option<&Node> {
-        self.nodes.get(id)
-    }
-
-    pub fn create_node(&mut self, attributes: HashSet<Attribute>) -> &Node {
-        let n = Node::new(attributes);
-        let node_id = n.id().clone();
-        self.nodes.insert(n.id().clone(), n);
-        self.get_node(&node_id).unwrap()
-    }
-
     pub fn create_edge(
         &mut self,
         relation: &str,
-        attributes: HashSet<Attribute>,
+        attributes: Attributes,
         source_id: &str,
         destination_id: &str,
     ) -> &Edge {

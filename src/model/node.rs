@@ -1,16 +1,15 @@
-use super::attribute::Attribute;
+use super::attributes::Attributes;
 use nanoid::nanoid;
-use std::collections::HashSet;
-use std::hash::{Hash, Hasher};
+use std::hash::Hash;
 
-#[derive(Clone, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct Node {
     id: String,
-    attributes: HashSet<Attribute>,
+    attributes: Attributes,
 }
 
 impl Node {
-    pub fn new(attributes: HashSet<Attribute>) -> Node {
+    pub fn new(attributes: Attributes) -> Node {
         Node {
             id: nanoid!(),
             attributes,
@@ -20,14 +19,8 @@ impl Node {
     pub fn id(&self) -> &String {
         &self.id
     }
-}
 
-impl Hash for Node {
-    fn hash<H: Hasher>(&self, _: &mut H) {}
-}
-
-impl PartialEq for Node {
-    fn eq(&self, other: &Self) -> bool {
-        self.id == other.id
+    pub fn attributes(&self) -> &Attributes {
+        &self.attributes
     }
 }
