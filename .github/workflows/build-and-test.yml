@@ -1,7 +1,7 @@
 name: Build and Test
 on: push
 jobs:
-    build_and_test:
+    build:
         name: Build and Test
         runs-on: ubuntu-latest
         steps:
@@ -11,3 +11,21 @@ jobs:
                   toolchain: stable
             - run: cargo build --release --all-features
             - run: cargo test
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions-rs/toolchain@v1
+                with:
+                    toolchain: stable
+            - run: cargo test
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions-rs/toolchain@v1
+                with:
+                    toolchain: stable
+            - run: cargo clippy
