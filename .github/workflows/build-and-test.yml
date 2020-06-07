@@ -10,7 +10,6 @@ jobs:
               with:
                   toolchain: stable
             - run: cargo build --release --all-features
-            - run: cargo test
     test:
         name: Test
         runs-on: ubuntu-latest
