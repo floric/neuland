@@ -30,14 +30,16 @@ impl Graph {
     }
 
     pub fn find_by_attribute(&self, key: &str, value: &str) -> Vec<&Node> {
+        self.find_by_matcher(key, &|x: &&String| *x == value)
+    }
+
+    pub fn find_by_matcher<F>(&self, key: &str, matcher: F) -> Vec<&Node>
+    where
+        F: Fn(&&String) -> bool,
+    {
         self.nodes
             .values()
-            .filter(|node| -> bool {
-                node.attributes()
-                    .get(key)
-                    .filter(|entry| -> bool { *entry == value })
-                    .is_some()
-            })
+            .filter(|node| node.attributes().get(key).filter(&matcher).is_some())
             .collect::<Vec<&Node>>()
     }
 }

@@ -6,3 +6,7 @@
 This is my first real Rust test. I decided to create a simple graph library / in-memory database.
 
 Please feel free to propose code improvements. This is a pure learning project for Rust and graph theory. :)
+
+## Instructions
+
+To format and build the project and run its tests, simply use `cargo make`.
