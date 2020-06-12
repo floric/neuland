@@ -1,4 +1,4 @@
-use super::attributes::Attributes;
+use super::attributes::{Attributes, HasAttributes};
 use nanoid::nanoid;
 use std::hash::Hash;
 
@@ -21,6 +21,12 @@ impl Node {
     }
 
     pub fn attributes(&self) -> &Attributes {
+        &self.attributes
+    }
+}
+
+impl HasAttributes for Node {
+    fn get_attributes(&self) -> &Attributes {
         &self.attributes
     }
 }

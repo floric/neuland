@@ -24,6 +24,10 @@ impl Attributes {
     }
 }
 
+pub trait HasAttributes {
+    fn get_attributes(&self) -> &Attributes;
+}
+
 impl Hash for Attributes {
     fn hash<H: Hasher>(&self, hasher: &mut H) {
         for att in self.values.iter() {

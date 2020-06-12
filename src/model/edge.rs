@@ -1,4 +1,4 @@
-use super::attributes::Attributes;
+use super::attributes::{Attributes, HasAttributes};
 use nanoid::nanoid;
 use std::hash::Hash;
 
@@ -39,6 +39,12 @@ impl Edge {
     }
 
     pub fn attributes(&self) -> &Attributes {
+        &self.attributes
+    }
+}
+
+impl HasAttributes for Edge {
+    fn get_attributes(&self) -> &Attributes {
         &self.attributes
     }
 }

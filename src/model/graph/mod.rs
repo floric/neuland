@@ -1,8 +1,10 @@
+mod filter;
 mod util;
 
 use super::Attributes;
 use super::Edge;
 use super::Node;
+use filter::find_by_attributes;
 use std::collections::HashMap;
 use std::option::Option;
 
@@ -29,18 +31,18 @@ impl Graph {
         self.get_node(&node_id).unwrap()
     }
 
-    pub fn find_by_attribute(&self, key: &str, value: &str) -> Vec<&Node> {
-        self.find_by_matcher(key, &|x: &&String| *x == value)
-    }
-
-    pub fn find_by_matcher<F>(&self, key: &str, matcher: F) -> Vec<&Node>
+    pub fn find_edges_by_attributes<F>(&self, key: &str, matcher: F) -> Vec<&Edge>
     where
         F: Fn(&&String) -> bool,
     {
-        self.nodes
-            .values()
-            .filter(|node| node.attributes().get(key).filter(&matcher).is_some())
-            .collect::<Vec<&Node>>()
+        find_by_attributes(self.edges.values(), key, matcher)
+    }
+
+    pub fn find_nodes_by_attributes<F>(&self, key: &str, matcher: F) -> Vec<&Node>
+    where
+        F: Fn(&&String) -> bool,
+    {
+        find_by_attributes(self.nodes.values(), key, matcher)
     }
 }
 
