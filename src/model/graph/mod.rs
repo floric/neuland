@@ -1,10 +1,10 @@
-mod filter;
+mod find;
 mod util;
 
 use super::Attributes;
 use super::Edge;
 use super::Node;
-use filter::find_by_attributes;
+use find::find_by_attributes;
 use std::collections::HashMap;
 use std::option::Option;
 
