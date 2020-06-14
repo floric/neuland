@@ -55,13 +55,17 @@ impl Graph {
         self.edges.get(id)
     }
 
-    pub fn create_edge(
+    pub fn create_edge<'a>(
         &mut self,
         relation: &str,
         attributes: Attributes,
         source_id: &str,
         destination_id: &str,
-    ) -> &Edge {
+    ) -> Result<String, &'a str> {
+        if self.has_relation(relation, source_id, destination_id) {
+            return Err("Edge already exists");
+        }
+
         let e = Edge::new(
             String::from(relation),
             String::from(source_id),
@@ -70,14 +74,28 @@ impl Graph {
         );
         let edge_id = e.id().clone();
         self.edges.insert(edge_id.clone(), e);
-        let edge = self.edges.get(&edge_id).unwrap();
 
         self.relations
             .entry(util::build_relation_key(source_id, destination_id))
             .or_insert_with(HashMap::new)
-            .insert(String::from(relation), edge_id);
+            .insert(String::from(relation), edge_id.clone());
 
-        edge
+        Ok(edge_id)
+    }
+
+    pub fn create_edges<'a>(
+        &mut self,
+        relation: &str,
+        attributes: Attributes,
+        source_id: &str,
+        destination_ids: &Vec<&str>,
+    ) -> Vec<Result<String, &'a str>> {
+        destination_ids
+            .iter()
+            .map(|destination| {
+                self.create_edge(relation, attributes.clone(), source_id, destination)
+            })
+            .collect()
     }
 
     pub fn remove_edge(&mut self, edge_id: &str) {

@@ -8,5 +8,5 @@ where
 {
     items
         .filter(|node| node.get_attributes().get(key).filter(&matcher).is_some())
-        .collect::<Vec<&'a T>>()
+        .collect()
 }
