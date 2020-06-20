@@ -180,3 +180,32 @@ fn test_find_edges_by_attributes() {
     assert!(!matches.is_empty());
     assert!(matches.contains(&graph.get_edge(&edge_id).unwrap()));
 }
+
+#[test]
+fn test_find_nodes_by_empty_path() {
+    let mut graph = Graph::default();
+    let node_a = graph.create_node(Attributes::default()).clone();
+    let node_b = graph.create_node(Attributes::default()).clone();
+    graph
+        .create_edge("is-some", Attributes::default(), node_a.id(), node_b.id())
+        .clone()
+        .ok();
+
+    let matches = graph.find_nodes_by_path(vec![]);
+
+    assert!(matches.is_empty());
+}
+
+#[test]
+fn test_find_nodes_by_unknown_path() {
+    let mut graph = Graph::default();
+    let node_a = graph.create_node(Attributes::default()).clone();
+    let node_b = graph.create_node(Attributes::default()).clone();
+    graph
+        .create_edge("is-some", Attributes::default(), node_a.id(), node_b.id())
+        .clone()
+        .ok();
+    let matches = graph.find_nodes_by_path(vec!["is-unknown"]);
+
+    assert!(matches.is_empty());
+}
