@@ -2,7 +2,7 @@ mod find;
 mod util;
 
 use super::{Attributes, Edge, Node};
-use find::find_by_attributes;
+use find::{find_by_attributes, find_nodes_by_path_internal};
 use std::collections::HashMap;
 use std::option::Option;
 
@@ -44,40 +44,7 @@ impl Graph {
     }
 
     pub fn find_nodes_by_path(&self, path: Vec<&str>) -> Vec<&Node> {
-        self.find_nodes_by_path_internal(self.nodes.values(), path)
-    }
-
-    fn find_nodes_by_path_internal<'a, I>(&self, nodes: I, path: Vec<&str>) -> Vec<&'a Node>
-    where
-        I: Iterator<Item = &'a Node>,
-    {
-        let x = path.split_first();
-        if x.is_none() {
-            return vec![];
-        }
-
-        let (relation, remaining_relations) = x.unwrap();
-
-        nodes
-            .filter(|x| {
-                let found_edges = self.get_edges_from_node(x.id(), relation);
-                if found_edges.is_empty() {
-                    return false;
-                } else if remaining_relations.is_empty() {
-                    return true;
-                }
-
-                found_edges.iter().any(|e| {
-                    let a = self.get_node(e.to_id()).unwrap();
-                    !self
-                        .find_nodes_by_path_internal(
-                            vec![a.clone()].iter(),
-                            Vec::from(remaining_relations),
-                        )
-                        .is_empty()
-                })
-            })
-            .collect()
+        find_nodes_by_path_internal(self, self.nodes.values(), path)
     }
 
     pub fn get_edges_from_node(&self, node_id: &str, relation: &str) -> Vec<&Edge> {
@@ -86,9 +53,7 @@ impl Graph {
             .filter(|e| e.relation() == relation && e.from_id() == node_id)
             .collect()
     }
-}
 
-impl Graph {
     pub fn edge_count(&self) -> usize {
         self.edges.len()
     }

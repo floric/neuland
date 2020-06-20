@@ -209,3 +209,29 @@ fn test_find_nodes_by_unknown_path() {
 
     assert!(matches.is_empty());
 }
+
+#[test]
+fn test_find_nodes_by_path_in_cycles() {
+    let mut graph = Graph::default();
+    let node_a = graph.create_node(Attributes::default()).clone();
+    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_c = graph.create_node(Attributes::default()).clone();
+    graph
+        .create_edge("is-a", Attributes::default(), node_a.id(), node_b.id())
+        .ok();
+    graph
+        .create_edge("is-a", Attributes::default(), node_b.id(), node_c.id())
+        .ok();
+    graph
+        .create_edge("is-a", Attributes::default(), node_c.id(), node_a.id())
+        .ok();
+
+    let matches = graph.find_nodes_by_path(vec!["is-a"]);
+    let cyclic_matches = graph.find_nodes_by_path(vec!["is-a", "is-a", "is-a", "is-a"]);
+    let twice_cyclic_matches =
+        graph.find_nodes_by_path(vec!["is-a", "is-a", "is-a", "is-a", "is-a", "is-b"]);
+
+    assert_eq!(matches.len(), 3);
+    assert_eq!(cyclic_matches.len(), 3);
+    assert!(twice_cyclic_matches.is_empty());
+}
