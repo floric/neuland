@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::hash::{Hash, Hasher};
 
 #[derive(Default, Clone, Eq)]
@@ -15,17 +15,23 @@ impl Attributes {
         self.values.get(key)
     }
 
-    pub fn set(&mut self, key: &str, value: String) {
-        self.values.insert(key.to_string(), value);
+    pub fn set(&mut self, key: &str, value: &str) {
+        self.values.insert(key.to_string(), String::from(value));
     }
 
     pub fn remove(&mut self, key: &str) {
         self.values.remove(key);
     }
+
+    pub fn keys(&self) -> HashSet<&String> {
+        self.values.keys().collect::<HashSet<_>>()
+    }
 }
 
 pub trait HasAttributes {
-    fn get_attributes(&self) -> &Attributes;
+    fn attributes_mut(&mut self) -> &mut Attributes;
+
+    fn attributes(&self) -> &Attributes;
 }
 
 impl Hash for Attributes {
@@ -56,7 +62,7 @@ mod tests {
     #[test]
     fn test_set_and_get_value() {
         let mut attributes = Attributes::default();
-        attributes.set("a", String::from("b"));
+        attributes.set("a", "b");
 
         assert_eq!(attributes.get("a").unwrap(), "b");
     }
@@ -64,7 +70,7 @@ mod tests {
     #[test]
     fn test_unknown_value() {
         let mut attributes = Attributes::default();
-        attributes.set("x", String::from("y"));
+        attributes.set("x", "y");
 
         assert!(attributes.get("a").is_none());
     }
@@ -72,7 +78,7 @@ mod tests {
     #[test]
     fn test_remove_value() {
         let mut attributes = Attributes::default();
-        attributes.set("a", String::from("b"));
+        attributes.set("a", "b");
         attributes.remove("a");
 
         assert!(attributes.get("a").is_none());

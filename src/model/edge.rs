@@ -42,14 +42,14 @@ impl Edge {
     pub fn to_id(&self) -> &String {
         &self.to
     }
-
-    pub fn attributes(&self) -> &Attributes {
-        &self.attributes
-    }
 }
 
 impl HasAttributes for Edge {
-    fn get_attributes(&self) -> &Attributes {
+    fn attributes_mut(&mut self) -> &mut Attributes {
+        &mut self.attributes
+    }
+
+    fn attributes(&self) -> &Attributes {
         &self.attributes
     }
 }

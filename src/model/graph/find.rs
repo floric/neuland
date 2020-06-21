@@ -8,7 +8,7 @@ where
     F: Fn(&&'a String) -> bool,
 {
     items
-        .filter(|node| node.get_attributes().get(key).filter(&matcher).is_some())
+        .filter(|node| node.attributes().get(key).filter(&matcher).is_some())
         .collect()
 }
 

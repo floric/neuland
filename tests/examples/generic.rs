@@ -185,9 +185,9 @@ fn test_edges_removal() {
 fn test_find_nodes_by_attributes() {
     let mut graph = Graph::default();
     let mut attributes_a = Attributes::default();
-    attributes_a.set("test", String::from("a"));
+    attributes_a.set("test", "a");
     let mut attributes_b = Attributes::default();
-    attributes_b.set("test", String::from("b"));
+    attributes_b.set("test", "b");
     let node_a = graph.create_node(&nanoid!(), attributes_a).clone();
     let node_b = graph.create_node(&nanoid!(), attributes_b).clone();
     let node_c = graph.create_default_node().clone();
@@ -203,7 +203,7 @@ fn test_find_nodes_by_attributes() {
 fn test_find_nodes_by_attributes_with_other_value() {
     let mut graph = Graph::default();
     let mut attributes = Attributes::default();
-    attributes.set("test", String::from("a"));
+    attributes.set("test", "a");
     graph.create_node(&nanoid!(), attributes);
 
     let matches = graph.find_nodes_by_attributes("test", |x| *x == "b");
@@ -223,7 +223,7 @@ fn test_find_nodes_by_attributes_with_no_result() {
 fn test_find_edges_by_attributes() {
     let mut graph = Graph::default();
     let mut attributes = Attributes::default();
-    attributes.set("test", String::from("a"));
+    attributes.set("test", "a");
     let node_a = graph.create_default_node().clone();
     let node_b = graph.create_default_node().clone();
 

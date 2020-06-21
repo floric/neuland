@@ -1,7 +1,7 @@
 mod find;
 mod util;
 
-use super::{Attributes, Edge, Node};
+use super::{attributes::HasAttributes, Attributes, Edge, Node};
 use find::{find_by_attributes, find_nodes_by_path_internal};
 use nanoid::nanoid;
 use std::collections::HashMap;
@@ -50,6 +50,24 @@ impl Graph {
 
     pub fn find_nodes_by_path(&self, path: Vec<&str>) -> Vec<&Node> {
         find_nodes_by_path_internal(self, self.nodes.values(), path)
+    }
+
+    pub fn attributes_of_node_mut(&mut self, id: &str) -> Option<&mut Attributes> {
+        let node = self.nodes.get_mut(id);
+        if node.is_none() {
+            return Option::None;
+        }
+
+        return Option::Some(node.unwrap().attributes_mut());
+    }
+
+    pub fn attributes_of_edge_mut(&mut self, id: &str) -> Option<&mut Attributes> {
+        let edge = self.edges.get_mut(id);
+        if edge.is_none() {
+            return Option::None;
+        }
+
+        return Option::Some(edge.unwrap().attributes_mut());
     }
 
     pub fn get_edges_from_node(&self, node_id: &str, relation: &str) -> Vec<&Edge> {
