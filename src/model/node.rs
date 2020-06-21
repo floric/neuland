@@ -1,5 +1,4 @@
 use super::attributes::{Attributes, HasAttributes};
-use nanoid::nanoid;
 use std::hash::Hash;
 
 #[derive(Clone, Hash, PartialEq, Eq)]
@@ -9,9 +8,9 @@ pub struct Node {
 }
 
 impl Node {
-    pub fn new(attributes: Attributes) -> Node {
+    pub fn new(id: &str, attributes: Attributes) -> Node {
         Node {
-            id: nanoid!(),
+            id: String::from(id),
             attributes,
         }
     }

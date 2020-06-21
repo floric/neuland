@@ -1,3 +1,4 @@
+use nanoid::nanoid;
 use neuland::model::Attributes;
 use neuland::model::Graph;
 
@@ -11,8 +12,8 @@ fn test_graph_creation() {
 #[test]
 fn test_node_creation() {
     let mut graph = Graph::default();
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
 
     assert_eq!(21, node_a.id().len());
     assert_eq!(21, node_b.id().len());
@@ -25,14 +26,26 @@ fn test_node_creation() {
 fn test_edge_creation() {
     let mut graph = Graph::default();
 
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
     let edge_a_id = graph
-        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-a",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
     let edge_a = graph.get_edge(&edge_a_id).unwrap().clone();
     graph
-        .create_edge("rel-b", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-b",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
 
     assert!(graph.has_any_relation(node_a.id(), node_b.id()));
@@ -52,13 +65,25 @@ fn test_edge_creation() {
 fn test_edge_creation_only_once() {
     let mut graph = Graph::default();
 
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
     graph
-        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-a",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
     let edge_b_id = graph
-        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-a",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap_err();
 
     assert_eq!(edge_b_id, "Edge already exists");
@@ -68,10 +93,16 @@ fn test_edge_creation_only_once() {
 fn test_edge_retrieval() {
     let mut graph = Graph::default();
 
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
     let edge_a_id = graph
-        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-a",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
     let edge_a = graph.get_edge(&edge_a_id).unwrap();
     let saved_edge_a = graph.get_edge(edge_a.id()).unwrap();
@@ -84,14 +115,26 @@ fn test_edge_retrieval() {
 fn test_edge_removal() {
     let mut graph = Graph::default();
 
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
     let edge_id = graph
-        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-a",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
     let edge = graph.get_edge(&edge_id).unwrap().clone();
     graph
-        .create_edge("rel-b", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-b",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
     graph.remove_edge(edge.id());
 
@@ -106,14 +149,26 @@ fn test_edge_removal() {
 fn test_edges_removal() {
     let mut graph = Graph::default();
 
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
     let edge_a_id = graph
-        .create_edge("rel-a", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-a",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
     let edge_a = graph.get_edge(&edge_a_id).unwrap().clone();
     let edge_b_id = graph
-        .create_edge("rel-b", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "rel-b",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .unwrap();
     let edge_b = graph.get_edge(&edge_b_id).unwrap().clone();
     graph.remove_edge(edge_a.id());
@@ -133,9 +188,9 @@ fn test_find_nodes_by_attributes() {
     attributes_a.set("test", String::from("a"));
     let mut attributes_b = Attributes::default();
     attributes_b.set("test", String::from("b"));
-    let node_a = graph.create_node(attributes_a).clone();
-    let node_b = graph.create_node(attributes_b).clone();
-    let node_c = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_node(&nanoid!(), attributes_a).clone();
+    let node_b = graph.create_node(&nanoid!(), attributes_b).clone();
+    let node_c = graph.create_default_node().clone();
 
     let matches = graph.find_nodes_by_attributes("test", |x| *x == "a");
     assert_eq!(1, matches.len());
@@ -149,7 +204,7 @@ fn test_find_nodes_by_attributes_with_other_value() {
     let mut graph = Graph::default();
     let mut attributes = Attributes::default();
     attributes.set("test", String::from("a"));
-    graph.create_node(attributes);
+    graph.create_node(&nanoid!(), attributes);
 
     let matches = graph.find_nodes_by_attributes("test", |x| *x == "b");
     assert!(matches.is_empty());
@@ -158,7 +213,7 @@ fn test_find_nodes_by_attributes_with_other_value() {
 #[test]
 fn test_find_nodes_by_attributes_with_no_result() {
     let mut graph = Graph::default();
-    graph.create_node(Attributes::default());
+    graph.create_default_node();
 
     let matches = graph.find_nodes_by_attributes("x", |x| *x == "a");
     assert!(matches.is_empty());
@@ -169,11 +224,11 @@ fn test_find_edges_by_attributes() {
     let mut graph = Graph::default();
     let mut attributes = Attributes::default();
     attributes.set("test", String::from("a"));
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
 
     let edge_id = graph
-        .create_edge("a", attributes, node_a.id(), node_b.id())
+        .create_edge(&nanoid!(), "a", attributes, node_a.id(), node_b.id())
         .unwrap();
 
     let matches = graph.find_edges_by_attributes("test", |x| *x == "a");
@@ -184,10 +239,16 @@ fn test_find_edges_by_attributes() {
 #[test]
 fn test_find_nodes_by_empty_path() {
     let mut graph = Graph::default();
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
     graph
-        .create_edge("is-some", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "is-some",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .clone()
         .ok();
 
@@ -199,10 +260,16 @@ fn test_find_nodes_by_empty_path() {
 #[test]
 fn test_find_nodes_by_unknown_path() {
     let mut graph = Graph::default();
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
     graph
-        .create_edge("is-some", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "is-some",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .clone()
         .ok();
     let matches = graph.find_nodes_by_path(vec!["is-unknown"]);
@@ -213,17 +280,35 @@ fn test_find_nodes_by_unknown_path() {
 #[test]
 fn test_find_nodes_by_path_in_cycles() {
     let mut graph = Graph::default();
-    let node_a = graph.create_node(Attributes::default()).clone();
-    let node_b = graph.create_node(Attributes::default()).clone();
-    let node_c = graph.create_node(Attributes::default()).clone();
+    let node_a = graph.create_default_node().clone();
+    let node_b = graph.create_default_node().clone();
+    let node_c = graph.create_default_node().clone();
     graph
-        .create_edge("is-a", Attributes::default(), node_a.id(), node_b.id())
+        .create_edge(
+            &nanoid!(),
+            "is-a",
+            Attributes::default(),
+            node_a.id(),
+            node_b.id(),
+        )
         .ok();
     graph
-        .create_edge("is-a", Attributes::default(), node_b.id(), node_c.id())
+        .create_edge(
+            &nanoid!(),
+            "is-a",
+            Attributes::default(),
+            node_b.id(),
+            node_c.id(),
+        )
         .ok();
     graph
-        .create_edge("is-a", Attributes::default(), node_c.id(), node_a.id())
+        .create_edge(
+            &nanoid!(),
+            "is-a",
+            Attributes::default(),
+            node_c.id(),
+            node_a.id(),
+        )
         .ok();
 
     let matches = graph.find_nodes_by_path(vec!["is-a"]);

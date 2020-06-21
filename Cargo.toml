@@ -10,3 +10,4 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 nanoid = "0.3.0"
+quick-xml = "0.18.1"

@@ -1,5 +1,4 @@
 use super::attributes::{Attributes, HasAttributes};
-use nanoid::nanoid;
 use std::hash::Hash;
 
 #[derive(Clone, Hash, PartialEq, Eq)]
@@ -12,9 +11,15 @@ pub struct Edge {
 }
 
 impl Edge {
-    pub fn new(relation: String, from: String, to: String, attributes: Attributes) -> Edge {
+    pub fn new(
+        id: String,
+        relation: String,
+        from: String,
+        to: String,
+        attributes: Attributes,
+    ) -> Edge {
         Edge {
-            id: nanoid!(),
+            id,
             relation,
             from,
             to,

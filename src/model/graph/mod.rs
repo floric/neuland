@@ -3,6 +3,7 @@ mod util;
 
 use super::{Attributes, Edge, Node};
 use find::{find_by_attributes, find_nodes_by_path_internal};
+use nanoid::nanoid;
 use std::collections::HashMap;
 use std::option::Option;
 
@@ -22,8 +23,12 @@ impl Graph {
         self.nodes.get(id)
     }
 
-    pub fn create_node(&mut self, attributes: Attributes) -> &Node {
-        let n = Node::new(attributes);
+    pub fn create_default_node(&mut self) -> &Node {
+        self.create_node(&nanoid!(), Attributes::default())
+    }
+
+    pub fn create_node(&mut self, id: &str, attributes: Attributes) -> &Node {
+        let n = Node::new(id, attributes);
         let node_id = n.id().clone();
         self.nodes.insert(node_id.clone(), n);
         self.get_node(&node_id).unwrap()
@@ -64,6 +69,7 @@ impl Graph {
 
     pub fn create_edge<'a>(
         &mut self,
+        id: &str,
         relation: &str,
         attributes: Attributes,
         source_id: &str,
@@ -74,6 +80,7 @@ impl Graph {
         }
 
         let e = Edge::new(
+            String::from(id),
             String::from(relation),
             String::from(source_id),
             String::from(destination_id),
@@ -95,12 +102,18 @@ impl Graph {
         relation: &str,
         attributes: Attributes,
         source_id: &str,
-        destination_ids: &Vec<&str>,
+        destination_ids: &[&str],
     ) -> Vec<Result<String, &'a str>> {
         destination_ids
             .iter()
             .map(|destination| {
-                self.create_edge(relation, attributes.clone(), source_id, destination)
+                self.create_edge(
+                    &nanoid!(),
+                    relation,
+                    attributes.clone(),
+                    source_id,
+                    destination,
+                )
             })
             .collect()
     }

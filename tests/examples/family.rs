@@ -1,3 +1,4 @@
+use nanoid::nanoid;
 use neuland::model::Attributes;
 use neuland::model::Graph;
 use neuland::model::Node;
@@ -66,12 +67,12 @@ pub fn test_family_tree_find() {
 fn create_graph() -> Family {
     let mut graph = Graph::default();
 
-    let father = graph.create_node(Attributes::default()).clone();
-    let mother = graph.create_node(Attributes::default()).clone();
-    let son = graph.create_node(Attributes::default()).clone();
-    let daughter = graph.create_node(Attributes::default()).clone();
-    let grand_father = graph.create_node(Attributes::default()).clone();
-    let grand_mother = graph.create_node(Attributes::default()).clone();
+    let father = graph.create_node(&nanoid!(), Attributes::default()).clone();
+    let mother = graph.create_node(&nanoid!(), Attributes::default()).clone();
+    let son = graph.create_node(&nanoid!(), Attributes::default()).clone();
+    let daughter = graph.create_node(&nanoid!(), Attributes::default()).clone();
+    let grand_father = graph.create_node(&nanoid!(), Attributes::default()).clone();
+    let grand_mother = graph.create_node(&nanoid!(), Attributes::default()).clone();
     let children: Vec<&str> = vec![daughter.id(), son.id()];
     let parents: Vec<&str> = vec![father.id(), mother.id()];
     let grand_parents: Vec<&str> = vec![grand_father.id(), grand_mother.id()];
@@ -87,6 +88,7 @@ fn create_graph() -> Family {
     );
     graph
         .create_edge(
+            &nanoid!(),
             "is-father",
             Attributes::default(),
             grand_father.id(),
@@ -95,6 +97,7 @@ fn create_graph() -> Family {
         .ok();
     graph
         .create_edge(
+            &nanoid!(),
             "is-mother",
             Attributes::default(),
             grand_mother.id(),
