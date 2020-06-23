@@ -1,6 +1,6 @@
 use crate::model::{Attributes, Graph};
 use nanoid::nanoid;
-use quick_xml::events::{BytesStart, Event};
+use quick_xml::events::{BytesStart, BytesText, Event};
 use quick_xml::{Error, Reader};
 use std::str;
 
@@ -13,8 +13,6 @@ pub fn import<'a>(path: &str) -> Result<Graph, Error> {
     }
 
     let mut reader = file_reader.unwrap();
-    reader.trim_text(true);
-
     let mut buf = Vec::new();
     let mut created_node: Option<String> = None;
     let mut created_edge: Option<String> = None;
@@ -30,9 +28,7 @@ pub fn import<'a>(path: &str) -> Result<Graph, Error> {
             Ok(Event::Start(ref e)) => match e.name() {
                 b"node" => created_node = create_node(e, &mut graph),
                 b"edge" => created_edge = create_edge(e, &mut graph),
-                b"data" => {
-                    key = get_attribute(b"key", e);
-                }
+                b"data" => key = get_attribute(b"key", e),
                 _ => (),
             },
             Ok(Event::End(ref e)) => match e.name() {
@@ -41,24 +37,13 @@ pub fn import<'a>(path: &str) -> Result<Graph, Error> {
                 b"data" => key = None,
                 _ => (),
             },
-            Ok(Event::Text(ref e)) => {
-                let value = String::from_utf8(e.to_vec());
-                if value.is_ok() && key.is_some() {
-                    let val = value.unwrap();
-                    let k = key.clone().unwrap();
-                    if created_node.is_some() {
-                        let attrs = graph.attributes_of_node_mut(&created_node.clone().unwrap());
-                        if attrs.is_some() {
-                            attrs.unwrap().set(&k, &val);
-                        }
-                    } else if created_edge.is_some() {
-                        let attrs = graph.attributes_of_edge_mut(&created_edge.clone().unwrap());
-                        if attrs.is_some() {
-                            attrs.unwrap().set(&k, &val);
-                        }
-                    }
-                }
-            }
+            Ok(Event::Text(ref e)) => create_data_attributes(
+                &e,
+                &mut key,
+                &mut created_node,
+                &mut created_edge,
+                &mut graph,
+            ),
             Ok(Event::Eof) => break,
             Err(e) => panic!("Error at position {}: {:?}", reader.buffer_position(), e),
             _ => (),
@@ -68,6 +53,31 @@ pub fn import<'a>(path: &str) -> Result<Graph, Error> {
     }
 
     Result::Ok(graph)
+}
+
+fn create_data_attributes(
+    e: &BytesText,
+    key: &mut Option<String>,
+    created_node: &Option<String>,
+    created_edge: &Option<String>,
+    graph: &mut Graph,
+) {
+    let value = String::from_utf8(e.to_vec());
+    if value.is_ok() && key.is_some() {
+        let val = value.unwrap();
+        let k = key.clone().unwrap();
+        if created_node.is_some() {
+            let attrs = graph.attributes_of_node_mut(&created_node.clone().unwrap());
+            if attrs.is_some() {
+                attrs.unwrap().set(&k, &val);
+            }
+        } else if created_edge.is_some() {
+            let attrs = graph.attributes_of_edge_mut(&created_edge.clone().unwrap());
+            if attrs.is_some() {
+                attrs.unwrap().set(&k, &val);
+            }
+        }
+    }
 }
 
 fn create_node(e: &BytesStart, graph: &mut Graph) -> Option<String> {
@@ -100,8 +110,7 @@ fn create_edge(e: &BytesStart, graph: &mut Graph) -> Option<String> {
 
 fn get_attribute(key: &[u8], e: &BytesStart) -> Option<String> {
     e.attributes()
-        .filter(|x| x.is_ok())
-        .map(|x| x.ok().unwrap())
+        .filter_map(|x| x.ok())
         .filter(|x| x.key == key)
         .map(|x| String::from_utf8(x.value.into()).ok())
         .next()
