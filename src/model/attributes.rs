@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{hash_map::Iter, HashMap, HashSet};
 use std::hash::{Hash, Hasher};
 
 #[derive(Default, Clone, Eq)]
@@ -25,6 +25,10 @@ impl Attributes {
 
     pub fn keys(&self) -> HashSet<&String> {
         self.values.keys().collect::<HashSet<_>>()
+    }
+
+    pub fn entries(&self) -> Iter<String, String> {
+        self.values.iter()
     }
 }
 

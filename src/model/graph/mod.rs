@@ -1,7 +1,7 @@
 mod find;
 mod util;
 
-use super::{attributes::HasAttributes, Attributes, Edge, Node};
+use super::{attributes::HasAttributes, query::AttributeMatcher, Attributes, Edge, Node, Query};
 use find::{find_by_attributes, find_nodes_by_path_internal};
 use nanoid::nanoid;
 use std::collections::HashMap;
@@ -34,22 +34,25 @@ impl Graph {
         self.get_node(&node_id).unwrap()
     }
 
-    pub fn find_edges_by_attributes<F>(&self, key: &str, matcher: F) -> Vec<&Edge>
-    where
-        F: Fn(&&String) -> bool,
-    {
+    pub fn find_edges_by_attributes(&self, key: &str, matcher: &AttributeMatcher) -> Vec<&Edge> {
         find_by_attributes(self.edges.values(), key, matcher)
     }
 
-    pub fn find_nodes_by_attributes<F>(&self, key: &str, matcher: F) -> Vec<&Node>
-    where
-        F: Fn(&&String) -> bool,
-    {
+    pub fn find_nodes_by_attributes(&self, key: &str, matcher: &AttributeMatcher) -> Vec<&Node> {
         find_by_attributes(self.nodes.values(), key, matcher)
     }
 
-    pub fn find_nodes_by_path(&self, path: Vec<&str>) -> Vec<&Node> {
+    pub fn find_nodes_by_path(&self, path: &Vec<&str>) -> Vec<&Node> {
         find_nodes_by_path_internal(self, self.nodes.values(), path)
+    }
+
+    pub fn find_nodes_by_query(&self, query: &Query) -> Vec<&Node> {
+        query
+            .attributes()
+            .iter()
+            .map(|x| self.find_nodes_by_attributes(x.0, x.1))
+            .flatten()
+            .collect()
     }
 
     pub fn attributes_of_node_mut(&mut self, id: &str) -> Option<&mut Attributes> {

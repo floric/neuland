@@ -1,6 +1,9 @@
 use nanoid::nanoid;
 use neuland::model::Attributes;
-use neuland::model::Graph;
+use neuland::model::{
+    query::{AttributeMatcher, Matcher},
+    Graph,
+};
 
 #[test]
 fn test_graph_creation() {
@@ -192,7 +195,16 @@ fn test_find_nodes_by_attributes() {
     let node_b = graph.create_node(&nanoid!(), attributes_b).clone();
     let node_c = graph.create_default_node().clone();
 
-    let matches = graph.find_nodes_by_attributes("test", |x| *x == "a");
+    struct EqMatcher {}
+
+    impl Matcher for EqMatcher {
+        fn apply(&self, arg: &String) -> bool {
+            arg == "a"
+        }
+    }
+
+    let matcher = AttributeMatcher::new(Box::from(EqMatcher {}));
+    let matches = graph.find_nodes_by_attributes("test", &matcher);
     assert_eq!(1, matches.len());
     assert!(matches.contains(&&node_a));
     assert!(!matches.contains(&&node_b));
@@ -206,7 +218,16 @@ fn test_find_nodes_by_attributes_with_other_value() {
     attributes.set("test", "a");
     graph.create_node(&nanoid!(), attributes);
 
-    let matches = graph.find_nodes_by_attributes("test", |x| *x == "b");
+    struct EqMatcher {}
+
+    impl Matcher for EqMatcher {
+        fn apply(&self, arg: &String) -> bool {
+            arg == "b"
+        }
+    }
+
+    let matcher = AttributeMatcher::new(Box::from(EqMatcher {}));
+    let matches = graph.find_nodes_by_attributes("test", &matcher);
     assert!(matches.is_empty());
 }
 
@@ -215,7 +236,16 @@ fn test_find_nodes_by_attributes_with_no_result() {
     let mut graph = Graph::default();
     graph.create_default_node();
 
-    let matches = graph.find_nodes_by_attributes("x", |x| *x == "a");
+    struct EqMatcher {}
+
+    impl Matcher for EqMatcher {
+        fn apply(&self, arg: &String) -> bool {
+            arg == "a"
+        }
+    }
+
+    let matcher = AttributeMatcher::new(Box::from(EqMatcher {}));
+    let matches = graph.find_nodes_by_attributes("x", &matcher);
     assert!(matches.is_empty());
 }
 
@@ -230,8 +260,16 @@ fn test_find_edges_by_attributes() {
     let edge_id = graph
         .create_edge(&nanoid!(), "a", attributes, node_a.id(), node_b.id())
         .unwrap();
+    struct EqMatcher {}
 
-    let matches = graph.find_edges_by_attributes("test", |x| *x == "a");
+    impl Matcher for EqMatcher {
+        fn apply(&self, arg: &String) -> bool {
+            arg == "a"
+        }
+    }
+
+    let matcher = AttributeMatcher::new(Box::from(EqMatcher {}));
+    let matches = graph.find_edges_by_attributes("test", &matcher);
     assert!(!matches.is_empty());
     assert!(matches.contains(&graph.get_edge(&edge_id).unwrap()));
 }
@@ -252,7 +290,7 @@ fn test_find_nodes_by_empty_path() {
         .clone()
         .ok();
 
-    let matches = graph.find_nodes_by_path(vec![]);
+    let matches = graph.find_nodes_by_path(&vec![]);
 
     assert!(matches.is_empty());
 }
@@ -272,7 +310,7 @@ fn test_find_nodes_by_unknown_path() {
         )
         .clone()
         .ok();
-    let matches = graph.find_nodes_by_path(vec!["is-unknown"]);
+    let matches = graph.find_nodes_by_path(&vec!["is-unknown"]);
 
     assert!(matches.is_empty());
 }
@@ -311,10 +349,10 @@ fn test_find_nodes_by_path_in_cycles() {
         )
         .ok();
 
-    let matches = graph.find_nodes_by_path(vec!["is-a"]);
-    let cyclic_matches = graph.find_nodes_by_path(vec!["is-a", "is-a", "is-a", "is-a"]);
+    let matches = graph.find_nodes_by_path(&vec!["is-a"]);
+    let cyclic_matches = graph.find_nodes_by_path(&vec!["is-a", "is-a", "is-a", "is-a"]);
     let twice_cyclic_matches =
-        graph.find_nodes_by_path(vec!["is-a", "is-a", "is-a", "is-a", "is-a", "is-b"]);
+        graph.find_nodes_by_path(&vec!["is-a", "is-a", "is-a", "is-a", "is-a", "is-b"]);
 
     assert_eq!(matches.len(), 3);
     assert_eq!(cyclic_matches.len(), 3);

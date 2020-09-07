@@ -49,13 +49,13 @@ pub fn test_family_tree_creation() {
 pub fn test_family_tree_find() {
     let family = create_graph();
 
-    let children = family.graph.find_nodes_by_path(vec!["is-child"]);
-    let fathers = family.graph.find_nodes_by_path(vec!["is-father"]);
-    let mothers = family.graph.find_nodes_by_path(vec!["is-mother"]);
+    let children = family.graph.find_nodes_by_path(&vec!["is-child"]);
+    let fathers = family.graph.find_nodes_by_path(&vec!["is-father"]);
+    let mothers = family.graph.find_nodes_by_path(&vec!["is-mother"]);
     let grand_mothers = family
         .graph
-        .find_nodes_by_path(vec!["is-mother", "is-father"]);
-    let unknowns = family.graph.find_nodes_by_path(vec!["is-x"]);
+        .find_nodes_by_path(&vec!["is-mother", "is-father"]);
+    let unknowns = family.graph.find_nodes_by_path(&vec!["is-x"]);
 
     assert_eq!(children.len(), 3);
     assert_eq!(fathers.len(), 2);

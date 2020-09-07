@@ -1,18 +1,26 @@
 use super::Graph;
-use crate::model::{attributes::HasAttributes, Node};
+use crate::model::{attributes::HasAttributes, query::AttributeMatcher, Node};
 
-pub fn find_by_attributes<'a, T, I, F>(items: I, key: &str, matcher: F) -> Vec<&'a T>
+pub fn find_by_attributes<'a, T, I>(items: I, key: &str, matcher: &AttributeMatcher) -> Vec<&'a T>
 where
     T: HasAttributes,
     I: Iterator<Item = &'a T>,
-    F: Fn(&&'a String) -> bool,
 {
     items
-        .filter(|node| node.attributes().get(key).filter(&matcher).is_some())
+        .filter(|node| {
+            node.attributes()
+                .get(key)
+                .filter(|x| matcher.matcher().apply(x))
+                .is_some()
+        })
         .collect()
 }
 
-pub fn find_nodes_by_path_internal<'a, I>(graph: &Graph, nodes: I, path: Vec<&str>) -> Vec<&'a Node>
+pub fn find_nodes_by_path_internal<'a, I>(
+    graph: &Graph,
+    nodes: I,
+    path: &Vec<&str>,
+) -> Vec<&'a Node>
 where
     I: Iterator<Item = &'a Node>,
 {
@@ -37,7 +45,7 @@ where
                 !find_nodes_by_path_internal(
                     graph,
                     vec![a.clone()].iter(),
-                    Vec::from(remaining_relations),
+                    &Vec::from(remaining_relations),
                 )
                 .is_empty()
             })
