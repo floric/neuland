@@ -23,27 +23,23 @@ pub fn find_nodes_by_path_internal<'a, I>(graph: &Graph, nodes: I, path: &[&str]
 where
     I: Iterator<Item = &'a Node>,
 {
-    let x = path.split_first();
-    if x.is_none() {
-        return vec![];
-    }
+    match path.split_first() {
+        Some((relation, remaining_relations)) => nodes
+            .filter(|x| {
+                let found_edges = graph.get_edges_from_node(x.id(), relation);
+                if found_edges.is_empty() {
+                    return false;
+                } else if remaining_relations.is_empty() {
+                    return true;
+                }
 
-    let (relation, remaining_relations) = x.unwrap();
-
-    nodes
-        .filter(|x| {
-            let found_edges = graph.get_edges_from_node(x.id(), relation);
-            if found_edges.is_empty() {
-                return false;
-            } else if remaining_relations.is_empty() {
-                return true;
-            }
-
-            found_edges.iter().any(|e| {
-                let a = graph.get_node(e.to_id()).unwrap();
-                !find_nodes_by_path_internal(graph, vec![a.clone()].iter(), remaining_relations)
-                    .is_empty()
+                found_edges.iter().any(|e| {
+                    let a = graph.get_node(e.to_id()).unwrap();
+                    !find_nodes_by_path_internal(graph, vec![a.clone()].iter(), remaining_relations)
+                        .is_empty()
+                })
             })
-        })
-        .collect()
+            .collect(),
+        None => vec![],
+    }
 }

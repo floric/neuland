@@ -63,18 +63,21 @@ fn create_data_attributes(
     graph: &mut Graph,
 ) {
     let value = String::from_utf8(e.to_vec());
-    if value.is_ok() && key.is_some() {
-        let val = &value.unwrap();
-        let k = key.unwrap();
-        if let Some(id) = created_node_id {
-            if let Some(attrs) = graph.attributes_of_node_mut(id) {
-                attrs.set(k, val);
-            }
-        } else if let Some(id) = created_edge_id {
-            if let Some(attrs) = graph.attributes_of_edge_mut(id) {
-                attrs.set(k, val);
+    match value {
+        Ok(att_value) => {
+            if let Some(att_key) = key {
+                if let Some(id) = created_node_id {
+                    if let Some(attrs) = graph.attributes_of_node_mut(id) {
+                        attrs.set(att_key, &att_value);
+                    }
+                } else if let Some(id) = created_edge_id {
+                    if let Some(attrs) = graph.attributes_of_edge_mut(id) {
+                        attrs.set(att_key, &att_value);
+                    }
+                }
             }
         }
+        Err(_) => {}
     }
 }
 

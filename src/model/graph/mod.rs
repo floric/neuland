@@ -59,10 +59,10 @@ impl Graph {
                     if a.is_some() && b.is_some() {
                         return Option::Some(a.unwrap().intersect(b.unwrap()));
                     }
-                    return a.or(b);
+                    a.or(b)
                 },
             )
-            .unwrap_or(vec![])
+            .unwrap_or_else(|| vec![])
     }
 
     pub fn attributes_of_node_mut(&mut self, id: &str) -> Option<&mut Attributes> {
