@@ -39,10 +39,10 @@ fn test_import_airplanes_dataset() {
     let path = fs::canonicalize(&PathBuf::from("./tests/resources/airlines.graphml")).unwrap();
     let graph = import(&(path.to_str().unwrap())).unwrap();
 
-    let route_matcher: Box<(dyn Matcher)> = Box::from(EqMatcher::new("route"));
-    let airport_matcher: Box<(dyn Matcher)> = Box::from(EqMatcher::new("airport"));
-    let route_edges = graph.find_edges_by_attributes("labelE", &route_matcher);
-    let airport_nodes = graph.find_nodes_by_attributes("type", &airport_matcher);
+    let route_matcher: &dyn Matcher = &EqMatcher::new("route");
+    let airport_matcher: &dyn Matcher = &EqMatcher::new("airport");
+    let route_edges = graph.find_edges_by_attributes("labelE", route_matcher);
+    let airport_nodes = graph.find_nodes_by_attributes("type", airport_matcher);
 
     assert_eq!(graph.node_count(), 47);
     assert_eq!(graph.edge_count(), 1386);

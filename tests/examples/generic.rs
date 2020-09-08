@@ -193,8 +193,8 @@ fn test_find_nodes_by_attributes() {
     let node_b = graph.create_node(&nanoid!(), attributes_b).clone();
     let node_c = graph.create_default_node().clone();
 
-    let matcher: Box<(dyn Matcher)> = Box::from(EqMatcher::new("a"));
-    let matches = graph.find_nodes_by_attributes("test", &matcher);
+    let matcher: &dyn Matcher = &EqMatcher::new("a");
+    let matches = graph.find_nodes_by_attributes("test", matcher);
     assert_eq!(1, matches.len());
     assert!(matches.contains(&&node_a));
     assert!(!matches.contains(&&node_b));
@@ -208,8 +208,8 @@ fn test_find_nodes_by_attributes_with_other_value() {
     attributes.set("test", "a");
     graph.create_node(&nanoid!(), attributes);
 
-    let matcher: Box<(dyn Matcher)> = Box::from(EqMatcher::new("b"));
-    let matches = graph.find_nodes_by_attributes("test", &matcher);
+    let matcher: &dyn Matcher = &EqMatcher::new("b");
+    let matches = graph.find_nodes_by_attributes("test", matcher);
     assert!(matches.is_empty());
 }
 
@@ -218,8 +218,8 @@ fn test_find_nodes_by_attributes_with_no_result() {
     let mut graph = Graph::default();
     graph.create_default_node();
 
-    let matcher: Box<(dyn Matcher)> = Box::from(EqMatcher::new("a"));
-    let matches = graph.find_nodes_by_attributes("x", &matcher);
+    let matcher: &dyn Matcher = &EqMatcher::new("a");
+    let matches = graph.find_nodes_by_attributes("x", matcher);
     assert!(matches.is_empty());
 }
 
@@ -235,8 +235,8 @@ fn test_find_edges_by_attributes() {
         .create_edge(&nanoid!(), "a", attributes, node_a.id(), node_b.id())
         .unwrap();
 
-    let matcher: Box<(dyn Matcher)> = Box::from(EqMatcher::new("a"));
-    let matches = graph.find_edges_by_attributes("test", &matcher);
+    let matcher: &dyn Matcher = &EqMatcher::new("a");
+    let matches = graph.find_edges_by_attributes("test", matcher);
     assert!(!matches.is_empty());
     assert!(matches.contains(&graph.get_edge(&edge_id).unwrap()));
 }
