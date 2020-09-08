@@ -42,14 +42,14 @@ fn test_import_airplanes_dataset() {
     struct RouteMatcher {}
 
     impl Matcher for RouteMatcher {
-        fn apply(&self, arg: &String) -> bool {
+        fn apply(&self, arg: &str) -> bool {
             arg == "route"
         }
     }
     struct AirportMatcher {}
 
     impl Matcher for AirportMatcher {
-        fn apply(&self, arg: &String) -> bool {
+        fn apply(&self, arg: &str) -> bool {
             arg == "airport"
         }
     }

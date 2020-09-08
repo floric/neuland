@@ -4,7 +4,7 @@ use quick_xml::events::{BytesStart, BytesText, Event};
 use quick_xml::{Error, Reader};
 use std::str;
 
-pub fn import<'a>(path: &str) -> Result<Graph, Error> {
+pub fn import(path: &str) -> Result<Graph, Error> {
     let mut graph = Graph::default();
 
     let file_reader = Reader::from_file(path);
@@ -66,15 +66,13 @@ fn create_data_attributes(
     if value.is_ok() && key.is_some() {
         let val = &value.unwrap();
         let k = key.unwrap();
-        if created_node_id.is_some() {
-            let attrs = graph.attributes_of_node_mut(created_node_id.unwrap());
-            if attrs.is_some() {
-                attrs.unwrap().set(k, val);
+        if let Some(id) = created_node_id {
+            if let Some(attrs) = graph.attributes_of_node_mut(id) {
+                attrs.set(k, val);
             }
-        } else if created_edge_id.is_some() {
-            let attrs = graph.attributes_of_edge_mut(created_edge_id.unwrap());
-            if attrs.is_some() {
-                attrs.unwrap().set(k, val);
+        } else if let Some(id) = created_edge_id {
+            if let Some(attrs) = graph.attributes_of_edge_mut(id) {
+                attrs.set(k, val);
             }
         }
     }
@@ -114,5 +112,5 @@ fn get_attribute(key: &[u8], e: &BytesStart) -> Option<String> {
         .filter(|x| x.key == key)
         .map(|x| String::from_utf8(x.value.into()).ok())
         .next()
-        .unwrap_or(Option::Some(nanoid!()))
+        .unwrap_or_else(|| Option::Some(nanoid!()))
 }

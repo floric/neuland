@@ -42,7 +42,7 @@ impl Graph {
         find_by_attributes(self.nodes.values(), key, matcher)
     }
 
-    pub fn find_nodes_by_path(&self, path: &Vec<&str>) -> Vec<&Node> {
+    pub fn find_nodes_by_path(&self, path: &[&str]) -> Vec<&Node> {
         find_nodes_by_path_internal(self, self.nodes.values(), path)
     }
 
@@ -57,20 +57,12 @@ impl Graph {
 
     pub fn attributes_of_node_mut(&mut self, id: &str) -> Option<&mut Attributes> {
         let node = self.nodes.get_mut(id);
-        if node.is_none() {
-            return Option::None;
-        }
-
-        return Option::Some(node.unwrap().attributes_mut());
+        node.map(|f| f.attributes_mut())
     }
 
     pub fn attributes_of_edge_mut(&mut self, id: &str) -> Option<&mut Attributes> {
         let edge = self.edges.get_mut(id);
-        if edge.is_none() {
-            return Option::None;
-        }
-
-        return Option::Some(edge.unwrap().attributes_mut());
+        edge.map(|e| e.attributes_mut())
     }
 
     pub fn get_edges_from_node(&self, node_id: &str, relation: &str) -> Vec<&Edge> {

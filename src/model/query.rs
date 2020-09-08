@@ -1,7 +1,7 @@
 use multimap::MultiMap;
 
 pub trait Matcher {
-    fn apply(&self, arg: &String) -> bool;
+    fn apply(&self, arg: &str) -> bool;
 }
 pub struct AttributeMatcher {
     matcher: Box<dyn Matcher>,
@@ -12,8 +12,8 @@ impl AttributeMatcher {
         AttributeMatcher { matcher }
     }
 
-    pub fn matcher(&self) -> &Box<dyn Matcher> {
-        &self.matcher
+    pub fn matcher(&self) -> &dyn Matcher {
+        self.matcher.as_ref()
     }
 }
 

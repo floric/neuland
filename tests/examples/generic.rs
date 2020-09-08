@@ -198,7 +198,7 @@ fn test_find_nodes_by_attributes() {
     struct EqMatcher {}
 
     impl Matcher for EqMatcher {
-        fn apply(&self, arg: &String) -> bool {
+        fn apply(&self, arg: &str) -> bool {
             arg == "a"
         }
     }
@@ -221,7 +221,7 @@ fn test_find_nodes_by_attributes_with_other_value() {
     struct EqMatcher {}
 
     impl Matcher for EqMatcher {
-        fn apply(&self, arg: &String) -> bool {
+        fn apply(&self, arg: &str) -> bool {
             arg == "b"
         }
     }
@@ -239,7 +239,7 @@ fn test_find_nodes_by_attributes_with_no_result() {
     struct EqMatcher {}
 
     impl Matcher for EqMatcher {
-        fn apply(&self, arg: &String) -> bool {
+        fn apply(&self, arg: &str) -> bool {
             arg == "a"
         }
     }
@@ -263,7 +263,7 @@ fn test_find_edges_by_attributes() {
     struct EqMatcher {}
 
     impl Matcher for EqMatcher {
-        fn apply(&self, arg: &String) -> bool {
+        fn apply(&self, arg: &str) -> bool {
             arg == "a"
         }
     }
