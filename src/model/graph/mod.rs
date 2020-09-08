@@ -31,8 +31,8 @@ impl Graph {
 
     pub fn create_node(&mut self, id: &str, attributes: Attributes) -> &Node {
         let n = Node::new(id, attributes);
-        let node_id = n.id().clone();
-        self.nodes.insert(node_id.clone(), n);
+        let node_id = n.id().to_string();
+        self.nodes.insert(node_id.to_string(), n);
         self.get_node(&node_id).unwrap()
     }
 
@@ -82,6 +82,21 @@ impl Graph {
         self.edges.get(id)
     }
 
+    pub fn create_default_edge<'a>(
+        &mut self,
+        relation: &str,
+        source_id: &str,
+        destination_id: &str,
+    ) -> Result<String, &'a str> {
+        self.create_edge(
+            &nanoid!(),
+            relation,
+            Attributes::default(),
+            source_id,
+            destination_id,
+        )
+    }
+
     pub fn create_edge<'a>(
         &mut self,
         id: &str,
@@ -101,13 +116,13 @@ impl Graph {
             String::from(destination_id),
             attributes,
         );
-        let edge_id = e.id().clone();
-        self.edges.insert(edge_id.clone(), e);
+        let edge_id = e.id().to_string();
+        self.edges.insert(edge_id.to_string(), e);
 
         self.relations
             .entry(util::build_relation_key(source_id, destination_id))
             .or_insert_with(HashMap::new)
-            .insert(String::from(relation), edge_id.clone());
+            .insert(String::from(relation), edge_id.to_string());
 
         Ok(edge_id)
     }
