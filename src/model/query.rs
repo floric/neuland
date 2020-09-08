@@ -7,13 +7,17 @@ pub struct Query {
 }
 
 impl Query {
-    pub fn select() -> Query {
+    pub fn new() -> Query {
         Query {
             attributes: MultiMap::new(),
         }
     }
 
-    pub fn with_att(&mut self, key: &str, matcher: Box<dyn Matcher>) -> &Query {
+    pub fn select(&mut self) -> &mut Query {
+        self
+    }
+
+    pub fn with_att(&mut self, key: &str, matcher: Box<dyn Matcher>) -> &mut Query {
         self.attributes.insert(key.to_string(), matcher);
         self
     }

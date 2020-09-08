@@ -2,10 +2,10 @@ use nanoid::nanoid;
 use neuland::model::Graph;
 use rand::{prelude::StdRng, Rng, SeedableRng};
 
-pub fn generate_random_graph(node_count: usize, edge_count: usize) -> Graph {
+pub fn generate_random_graph(seed: u64, node_count: usize, edge_count: usize) -> Graph {
     let mut graph = Graph::default();
     let mut node_ids: Vec<String> = vec![];
-    let mut rng = StdRng::seed_from_u64(123456);
+    let mut rng = StdRng::seed_from_u64(seed);
 
     for _ in 0..node_count {
         let n = graph.create_default_node().id().to_string();
