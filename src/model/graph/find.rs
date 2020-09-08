@@ -1,10 +1,10 @@
 use super::Graph;
 use crate::{
     model::{attributes::HasAttributes, Node},
-    query::matcher::AttributeMatcher,
+    query::matcher::Matcher,
 };
 
-pub fn find_by_attributes<'a, T, I>(items: I, key: &str, matcher: &AttributeMatcher) -> Vec<&'a T>
+pub fn find_by_attributes<'a, T, I>(items: I, key: &str, matcher: &dyn Matcher) -> Vec<&'a T>
 where
     T: HasAttributes,
     I: Iterator<Item = &'a T>,
@@ -13,7 +13,7 @@ where
         .filter(|node| {
             node.attributes()
                 .get(key)
-                .filter(|x| matcher.matcher().apply(x))
+                .filter(|x| matcher.apply(x))
                 .is_some()
         })
         .collect()

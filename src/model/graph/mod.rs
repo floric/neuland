@@ -1,7 +1,7 @@
 mod find;
 mod util;
 
-use crate::query::matcher::AttributeMatcher;
+use crate::query::matcher::Matcher;
 
 use super::{attributes::HasAttributes, Attributes, Edge, Node, Query};
 use find::{find_by_attributes, find_nodes_by_path_internal};
@@ -36,11 +36,11 @@ impl Graph {
         self.get_node(&node_id).unwrap()
     }
 
-    pub fn find_edges_by_attributes(&self, key: &str, matcher: &AttributeMatcher) -> Vec<&Edge> {
+    pub fn find_edges_by_attributes(&self, key: &str, matcher: &dyn Matcher) -> Vec<&Edge> {
         find_by_attributes(self.edges.values(), key, matcher)
     }
 
-    pub fn find_nodes_by_attributes(&self, key: &str, matcher: &AttributeMatcher) -> Vec<&Node> {
+    pub fn find_nodes_by_attributes(&self, key: &str, matcher: &dyn Matcher) -> Vec<&Node> {
         find_by_attributes(self.nodes.values(), key, matcher)
     }
 
@@ -52,7 +52,7 @@ impl Graph {
         query
             .attributes()
             .iter()
-            .map(|x| self.find_nodes_by_attributes(x.0, x.1))
+            .map(|x| self.find_nodes_by_attributes(x.0, x.1.as_ref()))
             .flatten()
             .collect()
     }
