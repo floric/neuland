@@ -13,8 +13,8 @@ impl Query {
         }
     }
 
-    pub fn with_att<F>(&mut self, key: String, matcher: Box<dyn Matcher>) -> &Query {
-        self.attributes.insert(key, matcher);
+    pub fn with_att(&mut self, key: &str, matcher: Box<dyn Matcher>) -> &Query {
+        self.attributes.insert(key.to_string(), matcher);
         self
     }
 

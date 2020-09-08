@@ -9,7 +9,12 @@ pub fn generate_random_graph(node_count: usize, edge_count: usize) -> Graph {
 
     for _ in 0..node_count {
         let n = graph.create_default_node().id().to_string();
-        graph.attributes_of_node_mut(&n).unwrap().set("abc", "123");
+        if rng.gen_bool(0.2) {
+            graph.attributes_of_node_mut(&n).unwrap().set("abc", "123");
+        }
+        if rng.gen_bool(0.1) {
+            graph.attributes_of_node_mut(&n).unwrap().set("xyz", "456");
+        }
         node_ids.push(n);
     }
     for _ in 0..edge_count {

@@ -4,10 +4,10 @@ mod util;
 use crate::query::matcher::Matcher;
 
 use super::{attributes::HasAttributes, Attributes, Edge, Node, Query};
+use array_tool::vec::Intersect;
 use find::{find_by_attributes, find_nodes_by_path_internal};
 use nanoid::nanoid;
 use std::collections::HashMap;
-use std::option::Option;
 
 #[derive(Default)]
 pub struct Graph {
@@ -52,9 +52,17 @@ impl Graph {
         query
             .attributes()
             .iter()
-            .map(|x| self.find_nodes_by_attributes(x.0, x.1.as_ref()))
-            .flatten()
-            .collect()
+            .map(|x| Option::Some(self.find_nodes_by_attributes(x.0, x.1.as_ref())))
+            .fold(
+                Option::None,
+                |a: Option<Vec<&Node>>, b: Option<Vec<&Node>>| {
+                    if a.is_some() && b.is_some() {
+                        return Option::Some(a.unwrap().intersect(b.unwrap()));
+                    }
+                    return a.or(b);
+                },
+            )
+            .unwrap_or(vec![])
     }
 
     pub fn attributes_of_node_mut(&mut self, id: &str) -> Option<&mut Attributes> {
