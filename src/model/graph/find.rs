@@ -1,5 +1,8 @@
 use super::Graph;
-use crate::model::{attributes::HasAttributes, query::AttributeMatcher, Node};
+use crate::{
+    model::{attributes::HasAttributes, Node},
+    query::matcher::AttributeMatcher,
+};
 
 pub fn find_by_attributes<'a, T, I>(items: I, key: &str, matcher: &AttributeMatcher) -> Vec<&'a T>
 where

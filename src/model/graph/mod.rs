@@ -1,7 +1,9 @@
 mod find;
 mod util;
 
-use super::{attributes::HasAttributes, query::AttributeMatcher, Attributes, Edge, Node, Query};
+use crate::query::matcher::AttributeMatcher;
+
+use super::{attributes::HasAttributes, Attributes, Edge, Node, Query};
 use find::{find_by_attributes, find_nodes_by_path_internal};
 use nanoid::nanoid;
 use std::collections::HashMap;

@@ -1,6 +1,5 @@
-use neuland::io::graphml::import;
-use neuland::model::attributes::HasAttributes;
-use neuland::model::query::{AttributeMatcher, Matcher};
+use neuland::{io::graphml::import, query::matcher::AttributeMatcher};
+use neuland::{model::attributes::HasAttributes, query::matcher::eq_matcher::EqMatcher};
 use std::fs;
 use std::{collections::HashSet, path::PathBuf};
 #[test]
@@ -39,25 +38,15 @@ fn test_import_generic_dataset() {
 fn test_import_airplanes_dataset() {
     let path = fs::canonicalize(&PathBuf::from("./tests/resources/airlines.graphml")).unwrap();
     let graph = import(&(path.to_str().unwrap())).unwrap();
-    struct RouteMatcher {}
 
-    impl Matcher for RouteMatcher {
-        fn apply(&self, arg: &str) -> bool {
-            arg == "route"
-        }
-    }
-    struct AirportMatcher {}
-
-    impl Matcher for AirportMatcher {
-        fn apply(&self, arg: &str) -> bool {
-            arg == "airport"
-        }
-    }
-
-    let route_edges = graph
-        .find_edges_by_attributes("labelE", &AttributeMatcher::new(Box::from(RouteMatcher {})));
-    let airport_nodes = graph
-        .find_nodes_by_attributes("type", &AttributeMatcher::new(Box::from(AirportMatcher {})));
+    let route_edges = graph.find_edges_by_attributes(
+        "labelE",
+        &AttributeMatcher::new(Box::from(EqMatcher::new("route"))),
+    );
+    let airport_nodes = graph.find_nodes_by_attributes(
+        "type",
+        &AttributeMatcher::new(Box::from(EqMatcher::new("airport"))),
+    );
 
     assert_eq!(graph.node_count(), 47);
     assert_eq!(graph.edge_count(), 1386);
