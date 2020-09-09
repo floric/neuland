@@ -19,11 +19,7 @@ where
         .collect()
 }
 
-pub fn find_nodes_by_path_internal<'a, I>(
-    graph: &Graph,
-    nodes: I,
-    path: &Vec<String>,
-) -> Vec<&'a Node>
+pub fn find_nodes_by_path_internal<'a, I>(graph: &Graph, nodes: I, path: &[String]) -> Vec<&'a Node>
 where
     I: Iterator<Item = &'a Node>,
 {

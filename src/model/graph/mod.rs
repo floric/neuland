@@ -44,7 +44,7 @@ impl Graph {
         find_by_attributes(self.nodes.values(), key, matcher)
     }
 
-    pub fn find_nodes_by_path(&self, path: &Vec<String>) -> Vec<&Node> {
+    pub fn find_nodes_by_path(&self, path: &[String]) -> Vec<&Node> {
         find_nodes_by_path_internal(self, self.nodes.values(), path)
     }
 
@@ -65,14 +65,14 @@ impl Graph {
             )
             .fold(
                 Option::None,
-                |a: Option<Vec<&Node>>, b: Option<Vec<&Node>>| {
-                    if a.is_some() && b.is_some() {
-                        return Option::Some(a.unwrap().intersect(b.unwrap()));
-                    }
-                    a.or(b)
+                |a: Option<Vec<&Node>>, b: Option<Vec<&Node>>| match (a, b) {
+                    (Some(x), Some(y)) => Option::Some(x.intersect(y)),
+                    (None, None) => Option::None,
+                    (None, Some(y)) => Option::Some(y),
+                    (Some(x), None) => Option::Some(x),
                 },
             )
-            .unwrap_or_else(|| vec![])
+            .unwrap_or(vec![])
     }
 
     pub fn attributes_of_node_mut(&mut self, id: &str) -> Option<&mut Attributes> {

@@ -24,7 +24,7 @@ impl Query {
         self
     }
 
-    pub fn with_path(&mut self, path: &Vec<&str>) -> &mut Query {
+    pub fn with_path(&mut self, path: &[&str]) -> &mut Query {
         self.paths
             .push(path.iter().map(|x| x.to_string()).collect());
         self

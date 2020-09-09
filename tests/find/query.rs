@@ -77,7 +77,7 @@ fn test_query_with_filters_for_attributes_with_path_match() {
         .relation();
 
     let mut query = Query::new();
-    query.select().with_path(&vec![random_edge_id]);
+    query.select().with_path(&[random_edge_id]);
     let found_nodes = graph.find_nodes_by_query(&query);
 
     assert_eq!(found_nodes.len(), 1);
