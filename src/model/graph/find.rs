@@ -19,7 +19,11 @@ where
         .collect()
 }
 
-pub fn find_nodes_by_path_internal<'a, I>(graph: &Graph, nodes: I, path: &[&str]) -> Vec<&'a Node>
+pub fn find_nodes_by_path_internal<'a, I>(
+    graph: &Graph,
+    nodes: I,
+    path: &Vec<String>,
+) -> Vec<&'a Node>
 where
     I: Iterator<Item = &'a Node>,
 {
@@ -35,8 +39,12 @@ where
 
                 found_edges.iter().any(|e| {
                     let a = graph.get_node(e.to_id()).unwrap();
-                    !find_nodes_by_path_internal(graph, vec![a.clone()].iter(), remaining_relations)
-                        .is_empty()
+                    !find_nodes_by_path_internal(
+                        graph,
+                        vec![a.clone()].iter(),
+                        &remaining_relations.to_vec(),
+                    )
+                    .is_empty()
                 })
             })
             .collect(),

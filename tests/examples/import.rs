@@ -8,8 +8,12 @@ fn test_import_generic_dataset() {
     let graph = import(&(path.to_str().unwrap())).unwrap();
     let node_a = graph.get_node("n0").unwrap();
     let node_b = graph.get_node("n1").unwrap();
-    let nodes_with_four_nested_children =
-        graph.find_nodes_by_path(&vec!["unknown", "unknown", "unknown", "unknown"]);
+    let nodes_with_four_nested_children = graph.find_nodes_by_path(&vec![
+        "unknown".to_string(),
+        "unknown".to_string(),
+        "unknown".to_string(),
+        "unknown".to_string(),
+    ]);
     let edges = graph.get_edges_from_node("n0", "unknown");
     let edge_ids = edges.iter().map(|x| x.id()).collect::<HashSet<_>>();
     let edge_a = graph.get_edge("e1").unwrap();

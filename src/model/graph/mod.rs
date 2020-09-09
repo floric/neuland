@@ -44,15 +44,25 @@ impl Graph {
         find_by_attributes(self.nodes.values(), key, matcher)
     }
 
-    pub fn find_nodes_by_path(&self, path: &[&str]) -> Vec<&Node> {
+    pub fn find_nodes_by_path(&self, path: &Vec<String>) -> Vec<&Node> {
         find_nodes_by_path_internal(self, self.nodes.values(), path)
     }
 
     pub fn find_nodes_by_query(&self, query: &Query) -> Vec<&Node> {
+        if query.attributes().is_empty() && query.paths().is_empty() {
+            return self.nodes.values().collect();
+        }
+
         query
-            .attributes()
+            .paths()
             .iter()
-            .map(|x| Option::Some(self.find_nodes_by_attributes(x.0, x.1.as_ref())))
+            .map(|p| Option::Some(self.find_nodes_by_path(p)))
+            .chain(
+                query
+                    .attributes()
+                    .iter()
+                    .map(|x| Option::Some(self.find_nodes_by_attributes(x.0, x.1.as_ref()))),
+            )
             .fold(
                 Option::None,
                 |a: Option<Vec<&Node>>, b: Option<Vec<&Node>>| {
@@ -79,6 +89,13 @@ impl Graph {
         self.edges
             .values()
             .filter(|e| e.relation() == relation && e.from_id() == node_id)
+            .collect()
+    }
+
+    pub fn get_all_edges_from_node(&self, node_id: &str) -> Vec<&Edge> {
+        self.edges
+            .values()
+            .filter(|e| e.from_id() == node_id)
             .collect()
     }
 

@@ -221,7 +221,7 @@ fn test_find_nodes_by_unknown_path() {
             &node_b,
         )
         .ok();
-    let matches = graph.find_nodes_by_path(&vec!["is-unknown"]);
+    let matches = graph.find_nodes_by_path(&vec!["is-unknown".to_string()]);
 
     assert!(matches.is_empty());
 }
@@ -242,10 +242,21 @@ fn test_find_nodes_by_path_in_cycles() {
         .create_edge(&nanoid!(), "is-a", Attributes::default(), &node_c, &node_a)
         .ok();
 
-    let matches = graph.find_nodes_by_path(&vec!["is-a"]);
-    let cyclic_matches = graph.find_nodes_by_path(&vec!["is-a", "is-a", "is-a", "is-a"]);
-    let twice_cyclic_matches =
-        graph.find_nodes_by_path(&vec!["is-a", "is-a", "is-a", "is-a", "is-a", "is-b"]);
+    let matches = graph.find_nodes_by_path(&vec!["is-a".to_string()]);
+    let cyclic_matches = graph.find_nodes_by_path(&vec![
+        "is-a".to_string(),
+        "is-a".to_string(),
+        "is-a".to_string(),
+        "is-a".to_string(),
+    ]);
+    let twice_cyclic_matches = graph.find_nodes_by_path(&vec![
+        "is-a".to_string(),
+        "is-a".to_string(),
+        "is-a".to_string(),
+        "is-a".to_string(),
+        "is-a".to_string(),
+        "is-b".to_string(),
+    ]);
 
     assert_eq!(matches.len(), 3);
     assert_eq!(cyclic_matches.len(), 3);

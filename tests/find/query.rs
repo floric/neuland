@@ -12,7 +12,7 @@ fn test_query_without_filters() {
 
     assert_eq!(graph.node_count(), 1000);
     assert_eq!(graph.edge_count(), 2000);
-    assert_eq!(found_nodes.len(), 0);
+    assert_eq!(found_nodes.len(), 1000);
 }
 
 #[test]
@@ -54,6 +54,33 @@ fn test_query_with_filters_for_attributes_with_few_matches() {
     let found_nodes = graph.find_nodes_by_query(&query);
 
     assert_eq!(found_nodes.len(), 25);
+}
+#[test]
+fn test_query_with_filters_for_attributes_with_path_match() {
+    let graph = create_test_graph();
+    let random_edge_id = graph
+        .find_nodes_by_query(&Query::new())
+        .iter()
+        .filter_map(|x| {
+            let edges = graph.get_all_edges_from_node(x.id());
+            if edges.is_empty() {
+                return Option::None;
+            }
+            return Option::Some(edges);
+        })
+        .next()
+        .unwrap()
+        .first()
+        .iter()
+        .next()
+        .unwrap()
+        .relation();
+
+    let mut query = Query::new();
+    query.select().with_path(&vec![random_edge_id]);
+    let found_nodes = graph.find_nodes_by_query(&query);
+
+    assert_eq!(found_nodes.len(), 1);
 }
 
 fn create_test_graph() -> Graph {
