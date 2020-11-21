@@ -76,7 +76,7 @@ dependencies = [
  "array_tool 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "multimap 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "nanoid 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "quick-xml 0.18.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "quick-xml 0.20.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -87,7 +87,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "quick-xml"
-version = "0.18.1"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "memchr 2.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -276,7 +276,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum multimap 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)" = "1255076139a83bb467426e7f8d0134968a8118844faa755985e077cf31850333"
 "checksum nanoid 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a6226bc4e142124cb44e309a37a04cd9bb10e740d8642855441d3b14808f635e"
 "checksum ppv-lite86 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)" = "ac74c624d6b2d21f425f752262f42188365d7b8ff1aff74c82e45136510a4857"
-"checksum quick-xml 0.18.1 (registry+https://github.com/rust-lang/crates.io-index)" = "3cc440ee4802a86e357165021e3e255a9143724da31db1e2ea540214c96a0f82"
+"checksum quick-xml 0.20.0 (registry+https://github.com/rust-lang/crates.io-index)" = "26aab6b48e2590e4a64d1ed808749ba06257882b461d01ca71baeb747074a6dd"
 "checksum rand 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)" = "6d71dacdc3c88c1fde3885a3be3fbab9f35724e6ce99467f7d9c5026132184ca"
 "checksum rand 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)" = "6a6b1679d49b24bbfe0c803429aa1874472f50d9b363131f0e89fc356b544d03"
 "checksum rand_chacha 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "556d3a1ca6600bfcbab7c7c91ccb085ac7fbbcd70e008a98742e7847f4f7bcef"

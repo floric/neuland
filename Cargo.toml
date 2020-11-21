@@ -10,7 +10,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 nanoid = "0.3.0"
-quick-xml = "0.18.1"
+quick-xml = "0.20.0"
 multimap="0.8.2"
 rand="0.7.3"
 array_tool="1.0.3"
