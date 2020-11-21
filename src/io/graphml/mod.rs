@@ -12,7 +12,7 @@ pub fn import(path: &str) -> Result<Graph, Error> {
         return Err(file_reader.err().unwrap());
     }
 
-    let mut reader = file_reader.unwrap();
+    let mut reader = file_reader?;
     let mut buf = Vec::new();
     let mut created_node_id: Option<String> = None;
     let mut created_edge_id: Option<String> = None;
@@ -82,7 +82,7 @@ fn create_data_attributes(
 }
 
 fn create_node(e: &BytesStart, graph: &mut Graph) -> Option<String> {
-    let id = get_attribute(b"id", e).unwrap();
+    let id = get_attribute(b"id", e)?;
     Option::Some(
         graph
             .create_node(&id, Attributes::default())
@@ -92,9 +92,9 @@ fn create_node(e: &BytesStart, graph: &mut Graph) -> Option<String> {
 }
 
 fn create_edge(e: &BytesStart, graph: &mut Graph) -> Option<String> {
-    let id = get_attribute(b"id", e).unwrap();
-    let source_id = get_attribute(b"source", e).unwrap();
-    let target_id = get_attribute(b"target", e).unwrap();
+    let id = get_attribute(b"id", e)?;
+    let source_id = get_attribute(b"source", e)?;
+    let target_id = get_attribute(b"target", e)?;
 
     let edge_id = graph
         .create_edge(
